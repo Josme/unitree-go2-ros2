@@ -22,50 +22,45 @@
     </inertial>
   </xacro:macro>
 
-  <xacro:macro name="mid360" params="name:='' parent:= 'base_link' topic:='mid360' *origin ">
+  <xacro:macro name="mid360" params="name:='' parent:= 'base_link' topic:='mid360' downsample:='1' visualize:='true' *origin ">
 
-    <link name="${name}">
+    <link name="${name}_frame">
     
+        <xacro:if value="${visualize}">
         <visual>
-        <origin rpy="0 0 0" xyz="0 0 0"/>
-        <geometry>
-            <sphere radius="0.03"/>
-        </geometry>
-        <material name="lidar_color">
-            <color rgba="1.0 0.4 0.2 1"/>
-        </material>
+            <origin rpy="1.57 0 3.14" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="file://$(find go2_description)/meshes/mid-360-asm.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
         </visual>
-        <visual>
-        <origin rpy="0 0 0" xyz="0 0 -0.02"/>
-        <geometry>
-            <box size="0.08 0.08 0.04"/>
-        </geometry>
-        <material name="lidar_base_color">
-            <color rgba="0.5 0.5 0.5 0.8"/>
-        </material>
-        </visual>
-        <collision>
-        <origin rpy="0 0 0" xyz="0 0 0"/>
-        <geometry>
-            <sphere radius="0.03"/>
-        </geometry>
-        </collision>
-        <collision>
-        <origin rpy="0 0 0" xyz="0 0 -0.02"/>
-        <geometry>
-            <box size="0.08 0.08 0.04"/>
-        </geometry>
-        </collision>
+        </xacro:if>
+
+      <collision>
+		  <origin xyz="0 0 0" rpy="1.57 0 3.14" /> 
+      <geometry> 
+         <mesh filename="file://$(find go2_description)/meshes/mid-360-asm.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      </collision>
     </link>
 
     <joint name="${name}_joint" type="fixed">
       <parent link="${parent}"/>
-      <child link="${name}"/>
+      <child link="${name}_frame"/>
       <xacro:insert_block name="origin"/>
     </joint>
 
-    <gazebo reference="${name}">
-      <sensor type="ray" name="${name}">
+    <link name="${name}_imu_link">
+    </link>
+
+    <joint name="${name}_imu_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="0.0 0 0"/>
+        <parent link="${name}_frame"/>
+        <child link="${name}_imu_link"/>
+    </joint>
+
+
+    <gazebo reference="${name}_frame">
+      <sensor type="ray" name="${name}_frame">
         <pose>0 0 0 0 0 0</pose>
         <visualize>true</visualize>
         <update_rate>10</update_rate>
@@ -99,13 +94,37 @@
 			</ray>
           <visualize>false</visualize>
 		  <samples>${samples}</samples>
-		  <downsample>1</downsample>
+		  <downsample>${downsample}</downsample>
 		  <csv_file_name>$(find ros2_livox_simulation)/scan_mode/mid360.csv</csv_file_name>
 		  <topic>${topic}</topic>
         </plugin>
       </sensor>
     </gazebo>
+
+    <gazebo reference="${name}_imu_link">
+        <gravity>true</gravity>
+        <sensor name="${name}imu_sensor" type="imu">
+        <always_on>true</always_on>
+        <update_rate>100</update_rate>
+        <visualize>true</visualize>
+        <topic>__default_topic__</topic>
+        <pose>0 0 0 0 0 0</pose>
+        <plugin filename="libgazebo_ros_imu_sensor.so" name="${name}_imu_plugin">
+            <ros>
+            <namespace>livox</namespace>
+            <remapping>${name}_imu_plugin/out:=/${name}/imu</remapping>
+            </ros>
+            <topicName>imu</topicName>
+            <bodyName>${name}_imu_link</bodyName>
+            <updateRateHZ>100.0</updateRateHZ>
+            <gaussianNoise>0.0001</gaussianNoise>
+            <xyzOffset>0 0 0</xyzOffset>
+            <rpyOffset>0 0 0</rpyOffset>
+            <frame_name>${name}_imu_link</frame_name>
+            <initial_orientation_as_reference>false</initial_orientation_as_reference>
+        </plugin>
+        </sensor>
+    </gazebo>
   </xacro:macro>
 
 </robot>
-
