@@ -104,21 +104,21 @@ ros2 launch go2_config gazebo_velodyne.launch.py
 ```bash
 ros2 launch go2_config gazebo_velodyne.launch.py rviz:=true
 ```
-### 2.6 Go2 Velodyne Config Gazebo demo: Run the Gazebo environment
+### 2.6 Go2 Livox-mid360 Config Gazebo demo: Run the Gazebo environment
 ```bash
 ros2 launch go2_config gazebo_mid360.launch.py 
 ```
 ![Go2 Velodyne Gazebo Launch](.docs/gazebo_mid360_launch.png)
 
-### 2.7 Go2 Veldyne Config Walking/PointCloud demo in RVIZ: Run the gazebo along with rviz
+### 2.7 Go2 Livox-mid360 Config Walking/PointCloud demo in RVIZ: Run the gazebo along with rviz
 ```bash
 ros2 launch go2_config gazebo_mid360.launch.py rviz:=true
 ```
 > Note: set point cloud topic to `/livox/lidar`
 
-![Go2 Velodyne Gazebo RViz Launch](.docs/gazebo_mid360_rviz_launch.png)
+![Go2 Livox-mid360 Gazebo RViz Launch](.docs/gazebo_mid360_rviz_launch.png)
 
-### 2.6 Go2 Hokoyu 2D LiDAR Config Gazbeo demo: Run the Gazebo environment
+### 2.8 Go2 Hokoyu 2D LiDAR Config Gazbeo demo: Run the Gazebo environment
 
 > NOTE: To use Laser instead of 3D Velodyne LiDAR, comment `<xacro:include filename="$(find go2_description)/xacro/velodyne.xacro"/>` and uncomment `<xacro:include filename="$(find go2_description)/xacro/laser.xacro"/>` in `robot_VLP.xacro` file located inside `robots/description/go2_description/xacro/` folder.
 
