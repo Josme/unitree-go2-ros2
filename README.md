@@ -104,10 +104,19 @@ ros2 launch go2_config gazebo_velodyne.launch.py
 ```bash
 ros2 launch go2_config gazebo_velodyne.launch.py rviz:=true
 ```
+### 2.6 Go2 Velodyne Config Gazebo demo: Run the Gazebo environment
+```bash
+ros2 launch go2_config gazebo_mid360.launch.py 
+```
+![Go2 Velodyne Gazebo Launch](.docs/gazebo_mid360_launch.png)
 
-> Note: set point cloud topic to `/velodyne_points`
+### 2.7 Go2 Veldyne Config Walking/PointCloud demo in RVIZ: Run the gazebo along with rviz
+```bash
+ros2 launch go2_config gazebo_mid360.launch.py rviz:=true
+```
+> Note: set point cloud topic to `/livox/lidar`
 
-![Go2 Velodyne Gazebo RViz Launch](.docs/gazebo_velodyne_rviz_launch.png)
+![Go2 Velodyne Gazebo RViz Launch](.docs/gazebo_mid360_rviz_launch.png)
 
 ### 2.6 Go2 Hokoyu 2D LiDAR Config Gazbeo demo: Run the Gazebo environment
 

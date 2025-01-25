@@ -27,6 +27,9 @@ def generate_launch_description():
     descr_pkg_share = launch_ros.substitutions.FindPackageShare(
         package="go2_description"
     ).find("go2_description")
+    champ_descr_pkg_share = launch_ros.substitutions.FindPackageShare(
+        package="champ_description"
+    ).find("champ_description")
     joints_config = os.path.join(config_pkg_share, "config/joints/joints.yaml")
     ros_control_config = os.path.join(
         config_pkg_share, "/config/ros_control/ros_control.yaml"
@@ -35,6 +38,7 @@ def generate_launch_description():
     links_config = os.path.join(config_pkg_share, "config/links/links.yaml")
     default_model_path = os.path.join(descr_pkg_share, "xacro/robot_mid360.xacro")
     default_world_path = os.path.join(config_pkg_share, "worlds/ROS-Academy.world")
+    default_rviz_path = os.path.join(champ_descr_pkg_share, "rviz/urdf_viewer_mid360.rviz")
 
     declare_use_sim_time = DeclareLaunchArgument(
         "use_sim_time",
@@ -61,6 +65,11 @@ def generate_launch_description():
 
     declare_gui = DeclareLaunchArgument(
         "gui", default_value="true", description="Use gui"
+    )
+    declare_rviz_file = DeclareLaunchArgument(
+        "rviz_path",
+        default_value=default_rviz_path,
+        description="Ros rviz path",
     )
     declare_world_init_x = DeclareLaunchArgument("world_init_x", default_value="0.0")
     declare_world_init_y = DeclareLaunchArgument("world_init_y", default_value="0.0")
@@ -121,6 +130,7 @@ def generate_launch_description():
         [
             declare_use_sim_time,
             declare_rviz,
+            declare_rviz_file,
             declare_robot_name,
             declare_lite,
             declare_ros_control_file,
