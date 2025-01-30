@@ -9,38 +9,44 @@
     <xacro:property name="noise_mean" value="0.0"/>
     <xacro:property name="noise_stddev" value="0.01"/>
 
-    <xacro:property name="mass" value="0.4" />
-    <xacro:property name="length" value="0.05" />
-    <xacro:property name="width" value="0.05" />
-    <xacro:property name="height" value="0.02" />
-
-  <xacro:macro name="box_inertia" params="m w h d">
-    <inertial>
-      <origin xyz="0 0 0" rpy="${pi/2} 0 ${pi/2}"/>
-      <mass value="${m}"/>
-      <inertia ixx="${(m/12) * (h*h + d*d)}" ixy="0.0" ixz="0.0" iyy="${(m/12) * (w*w + d*d)}" iyz="0.0" izz="${(m/12) * (w*w + h*h)}"/>
-    </inertial>
-  </xacro:macro>
+    <!-- 修正质量参数（Livox Mid360实际重量约220g） -->
+    <xacro:property name="mass" value="0.22" />
+    <xacro:property name="length" value="0.05" />  <!-- X轴方向尺寸 -->
+    <xacro:property name="width" value="0.05" />   <!-- Y轴方向尺寸 -->
+    <xacro:property name="height" value="0.02" />  <!-- Z轴方向尺寸 -->
 
   <xacro:macro name="mid360" params="name:='' parent:= 'base_link' topic:='mid360' downsample:='1' visualize:='true' *origin ">
 
     <link name="${name}_frame">
-    
-        <xacro:if value="${visualize}">
+      <xacro:if value="${visualize}">
         <visual>
-            <origin rpy="1.57 0 3.14" xyz="0 0 0"/>
+            <origin rpy="0 0 1.57" xyz="0 0 0"/>
             <geometry>
-                <mesh filename="file://$(find go2_description)/meshes/mid-360-asm.stl" scale="0.001 0.001 0.001"/>
+                <mesh filename="file://$(find go2_description)/meshes/livox_mid360.dae"/>
             </geometry>
         </visual>
-        </xacro:if>
+        
+        <collision>
+        <origin xyz="0 0 0" rpy="0 0 1.57" /> 
+            <geometry> 
+              <mesh filename="file://$(find go2_description)/meshes/livox_mid360.dae"/>
+            </geometry>
+        </collision>
 
-      <collision>
-		  <origin xyz="0 0 0" rpy="1.57 0 3.14" /> 
-      <geometry> 
-         <mesh filename="file://$(find go2_description)/meshes/mid-360-asm.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      </collision>
+        <inertial>
+          <!-- 移除冗余旋转，保持坐标系与link一致 -->
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <mass value="${mass}"/>
+          <!-- 修正惯性张量计算公式 -->
+          <inertia 
+              ixx="${(mass/12) * (width**2 + height**2)}"
+              ixy="0.0"
+              ixz="0.0"
+              iyy="${(mass/12) * (length**2 + height**2)}"
+              iyz="0.0"
+              izz="${(mass/12) * (length**2 + width**2)}"/>
+        </inertial>
+      </xacro:if>
     </link>
 
     <joint name="${name}_joint" type="fixed">
@@ -49,6 +55,7 @@
       <xacro:insert_block name="origin"/>
     </joint>
 
+    <!-- 以下部分保持不变 -->
     <link name="${name}_imu_link">
     </link>
 
@@ -57,7 +64,6 @@
         <parent link="${name}_frame"/>
         <child link="${name}_imu_link"/>
     </joint>
-
 
     <gazebo reference="${name}_frame">
       <sensor type="ray" name="${name}_frame">
@@ -77,8 +83,8 @@
 				<vertical>
 				<samples>360</samples>
 				<resolution>1</resolution>
-        <min_angle>${-55.22/180*pi}</min_angle>
-        <max_angle>${7.22/180*pi}</max_angle>
+                <min_angle>${-55.22/180*pi}</min_angle>
+                <max_angle>${7.22/180*pi}</max_angle>
 				</vertical>
 			  </scan>
 			  <range>

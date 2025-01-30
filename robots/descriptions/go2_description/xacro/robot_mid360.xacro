@@ -154,11 +154,11 @@
     <xacro:leg name="lh" mirror="1"  mirror_dae="True"   front_hind="-1" front_hind_dae="False" />
 
     <xacro:include filename="$(find go2_description)/xacro/mid360.xacro"/>
-    <xacro:mid360 name="livox" parent="imu_link" topic="livox/lidar">
+    <xacro:mid360 name="livox" parent="imu_link" topic="livox/lidar" downsample='1' visualize="true" >
         <origin xyz="0.1870 0 0.0803" rpy="0 0.2268928 0"/>
     </xacro:mid360>
     <xacro:mid360 name="utlidar_lidar" parent="unitree_lidar" topic="utlidar/cloud" downsample='10' visualize="false" >
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="0 0 0.2" rpy="0 0 0"/>
     </xacro:mid360>
 
     <!-- <xacro:include filename="$(find go2_description)/xacro/laser.xacro"/> -->
