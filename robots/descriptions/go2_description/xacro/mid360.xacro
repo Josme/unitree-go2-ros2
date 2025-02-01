@@ -9,11 +9,11 @@
     <xacro:property name="noise_mean" value="0.0"/>
     <xacro:property name="noise_stddev" value="0.01"/>
 
-    <!-- 修正质量参数（Livox Mid360实际重量约220g） -->
+
     <xacro:property name="mass" value="0.22" />
-    <xacro:property name="length" value="0.05" />  <!-- X轴方向尺寸 -->
-    <xacro:property name="width" value="0.05" />   <!-- Y轴方向尺寸 -->
-    <xacro:property name="height" value="0.02" />  <!-- Z轴方向尺寸 -->
+    <xacro:property name="length" value="0.05" /> 
+    <xacro:property name="width" value="0.05" />  
+    <xacro:property name="height" value="0.02" /> 
 
   <xacro:macro name="mid360" params="name:='' parent:= 'base_link' topic:='mid360' downsample:='1' visualize:='true' *origin ">
 
@@ -34,10 +34,8 @@
         </collision>
 
         <inertial>
-          <!-- 移除冗余旋转，保持坐标系与link一致 -->
           <origin xyz="0 0 0" rpy="0 0 0"/>
           <mass value="${mass}"/>
-          <!-- 修正惯性张量计算公式 -->
           <inertia 
               ixx="${(mass/12) * (width**2 + height**2)}"
               ixy="0.0"
@@ -55,7 +53,6 @@
       <xacro:insert_block name="origin"/>
     </joint>
 
-    <!-- 以下部分保持不变 -->
     <link name="${name}_imu_link">
     </link>
 
