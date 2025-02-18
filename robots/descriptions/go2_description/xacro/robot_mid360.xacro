@@ -161,6 +161,10 @@
         <origin xyz="0 0 0.1" rpy="0 0 0"/>
     </xacro:mid360>
 
+    <xacro:include filename="$(find go2_description)/xacro/camera.xacro"/>
+    <xacro:add_camera camera_name="camera" camera_parent="trunk" >
+        <origin rpy="0 0 0" xyz="0.32715 -0.00003 0.04297"/>
+    </xacro:add_camera>
     <!-- <xacro:include filename="$(find go2_description)/xacro/laser.xacro"/> -->
 
 </robot>

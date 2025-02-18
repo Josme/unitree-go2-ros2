@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+<xacro:macro name="add_camera" params="camera_name:='' camera_parent:='base_link' *origin">
+
+<!-- 1. 定义相机参数 -->
+<xacro:property name="camera_width" value="640"/>         <!-- 图像宽度 -->
+<xacro:property name="camera_height" value="480"/>        <!-- 图像高度 -->
+<xacro:property name="camera_rate" value="30"/>           <!-- 帧率 -->
+
+<link name="${camera_name}_link">
+</link>
+
+<joint name="${camera_name}_joint" type="fixed">
+  <parent link="${camera_parent}"/>
+  <child link="${camera_name}_link"/>
+  <xacro:insert_block name="origin"/>
+</joint>
+
+<!-- 3. 添加 Gazebo 插件 -->
+<gazebo reference="${camera_name}_link">
+  <sensor type="camera" name="${camera_name}">
+    <always_on>true</always_on> <!-- 新增 -->
+    <update_rate>${camera_rate}</update_rate>
+    <camera>
+      <horizontal_fov>1.0472</horizontal_fov> <!-- 60度视场角 -->
+      <image>
+        <width>${camera_width}</width>
+        <height>${camera_height}</height>
+        <format>R8G8B8</format>
+      </image>
+      <clip>
+        <near>0.1</near>
+        <far>100</far>
+      </clip>
+    </camera>
+    <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+      <ros>
+        <namespace>/</namespace> <!-- 移除斜杠 -->
+      </ros>
+      <camera_name>${camera_name}</camera_name>
+      <frame_name>${camera_name}_link</frame_name>
+      <hack_baseline>0.07</hack_baseline>
+    </plugin>
+  </sensor>
+</gazebo>
+</xacro:macro>
+</robot>
